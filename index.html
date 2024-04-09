@@ -1,0 +1,68 @@
+<html>
+    <body>
+        <h1>Azure Web PubSub Serverless Chat App</h1>
+        <div id="login"></div>
+        <p></p>
+        <input id="username" placeholder="Enter username" />
+        <button id="submit">Submit username</button>
+        <input id="message" placeholder="Type to chat..." />
+        <div id="messages"></div>
+        <script>
+            (async function () {
+                let authenticated = window.location.href.includes(
+                    "?user="
+                );
+                if (!authenticated) {
+                    // auth
+                    let login = document.querySelector("#login");
+                    let link = document.createElement("a");
+                    link.href = `${window.location.origin}/.auth/login/aad?post_login_redirect_url=/api/index?authenticated=true`;
+                    link.text = "login";
+                    login.appendChild(link);
+                    const submitButton = document.querySelector("#submit");
+                    submitButton.addEventListener("click", (e) => {
+                        console.log("pressed");
+                        let userName = document.querySelector("#username");
+                        console.log("userName");
+                        console.log(userName.value);
+                        const redirectTo = `${window.location.origin}/api/index?user=${userName.value}`
+                        window.location.href = redirectTo
+                    });
+                } else {
+                    // negotiate
+                    let messages = document.querySelector("#messages");
+                    const queryParams = new URLSearchParams(window.location.search);
+
+                    const userValue = queryParams.get('user');
+                    let res = await fetch(
+                        `${window.location.origin}/api/negotiate?user=${userValue}&name=${userValue}`,
+                        {
+                            credentials: "include",
+                        }
+                    );
+                    let url = await res.json();
+                    // connect
+                    console.log(url)
+                    console.log(url.url)
+                    let ws = new WebSocket(url.url);
+                    ws.onopen = () => console.log("connected");
+                    ws.onmessage = (event) => {
+                        let m = document.createElement("p");
+                        m.innerText = event.data;
+                        messages.appendChild(m);
+                    };
+                    ws.onerror = (event) => {
+                        console.log(event);
+                    };
+                    let message = document.querySelector("#message");
+                    message.addEventListener("keypress", (e) => {
+                        console.log(e.charCode);
+                        if (e.charCode !== 13) return;
+                        ws.send(message.value);
+                        message.value = "";
+                    });
+                }
+            })();
+        </script>
+    </body>
+</html>
