@@ -1,17 +1,18 @@
 {
     "bindings": [
       {
+        "authLevel": "anonymous",
         "type": "webPubSubTrigger",
         "direction": "in",
         "name": "data",
-        "hub": "simplechat",
+        "hub": "simplechatlocal",
         "eventName": "message",
         "eventType": "user"
       },
       {
         "type": "webPubSub",
         "name": "actions",
-        "hub": "simplechat",
+        "hub": "simplechatlocal",
         "direction": "out"
       }
     ]

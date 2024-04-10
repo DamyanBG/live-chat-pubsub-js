@@ -1,7 +1,7 @@
 {
   "bindings": [
     {
-      "authLevel": "function",
+      "authLevel": "anonymous",
       "type": "httpTrigger",
       "direction": "in",
       "name": "req"
@@ -14,8 +14,8 @@
     {
       "type": "webPubSubConnection",
       "name": "connection",
-      "hub": "simplechat",
-      "userId": "{req.query.user}",
+      "hub": "simplechatlocal",
+      "userId": "{query.user}",
       "direction": "in"
     }
   ]

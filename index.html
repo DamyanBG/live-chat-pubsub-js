@@ -47,6 +47,8 @@
                     let ws = new WebSocket(url.url);
                     ws.onopen = () => console.log("connected");
                     ws.onmessage = (event) => {
+                        console.log(event)
+                        console.log(event.data)
                         let m = document.createElement("p");
                         m.innerText = event.data;
                         messages.appendChild(m);
